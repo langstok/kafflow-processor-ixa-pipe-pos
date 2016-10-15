@@ -1,0 +1,18 @@
+server:
+  port: ${vcap.application.ixaposprocessor.port:0}
+
+logging:
+  file: processor-ixa-pipe-pos.log
+  level: 
+    com.langstok: debug
+
+ixapos:
+ models:
+  en: ..\..\models\morph-models-1.5.0\en\en-pos-maxent-100-c5-baseline-autodict01-conll09.bin
+  es: ../models/pos/es/es-maxent-100-c5-baseline-autodict01-ancora.bin
+  fr: ../models/pos/fr/fr-baseline-sequoia.bin
+  gl: ../models/pos/gl/gl-perceptron-baseline-autodict05-ctag.bin
+ lemmatizermodels:
+  en: ..\..\models\morph-models-1.5.0\en\en-lemma-perceptron-conll09.bin
+ 
+ 
