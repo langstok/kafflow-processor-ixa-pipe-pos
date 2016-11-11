@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import eus.ixa.ixa.pipe.pos.CLI;
 
-@ConfigurationProperties(prefix="ixapos")
+@ConfigurationProperties
 public class IxaPosProperties {
 		
 	/**
