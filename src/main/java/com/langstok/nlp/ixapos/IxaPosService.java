@@ -1,6 +1,8 @@
 package com.langstok.nlp.ixapos;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.annotation.PostConstruct;
@@ -28,10 +30,10 @@ public class IxaPosService {
 
 	@Autowired
 	IxaPosProperties posProperties;
-	
-	private Annotate annotator;
-	
-	private String model;
+
+	private Map<String, Annotate> annotatorMap = new HashMap<>();
+
+	private Map<String, String> modelMap = new HashMap<>();
 
 	private final String version = CLI.class.getPackage().getImplementationVersion();
 
@@ -42,7 +44,12 @@ public class IxaPosService {
 		StopWatch stopWatch = new StopWatch();
 		stopWatch.start();
 		try {
-			document = annotate(document);
+			if(annotatorMap.containsKey(document.getLang())){
+				document = annotate(document);
+			}
+			else{
+				LOGGER.warn("No models loaded for language:" + document.getLang()+" id:"+document.getPublic().publicId);
+			}
 		} catch (IOException e) {
 			LOGGER.error("IOException for KAF publicId: " + document.getPublic().publicId, e);
 		} catch (JDOMException e) {
@@ -57,10 +64,11 @@ public class IxaPosService {
 
 	public final KAFDocument annotate(KAFDocument kaf) throws Exception	{
 		final KAFDocument.LinguisticProcessor newLp = kaf.addLinguisticProcessor(
-				"terms", "ixa-pipe-pos-" + Files.getNameWithoutExtension(model),
-				this.version + "-" + this.commit);
+				"terms", "ixa-pipe-pos-" + Files.getNameWithoutExtension(
+						this.modelMap.get(kaf.getLang())),
+						this.version + "-" + this.commit);
 		newLp.setBeginTimestamp();
-		annotator.annotatePOSToKAF(kaf);
+		this.annotatorMap.get(kaf.getLang()).annotatePOSToKAF(kaf);
 		newLp.setEndTimestamp();
 		return kaf;
 	}
@@ -75,26 +83,26 @@ public class IxaPosService {
 		annotateProperties.setProperty("dictag", dictag);
 		return annotateProperties;
 	}
-	
-	@PostConstruct
-	private void init() throws Exception{
+
+	@PostConstruct	
+	private void initModels() throws Exception{
+
 		String multiwords = Boolean.toString(posProperties.getMultiwords());
 		String dictag = Boolean.toString(posProperties.getDictag());
 
-		String lang = posProperties.getLanguage();
-		if(!posProperties.getModels().containsKey(lang)){
-			throw new Exception("language model not configured for language: "+lang);
-		}
-		this.model = posProperties.getModels().get(lang);
-		
-		if(!posProperties.getLemmatizermodels().containsKey(lang)){
-			throw new Exception("lemmatizermodel model not configured for language: "+lang);
-		}
-		final String lemmatizerModel = posProperties.getLemmatizermodels().get(lang);
+		for(int i=0; i<posProperties.getLanguages().size(); i++){
 
-		Properties properties = setAnnotateProperties(model, lemmatizerModel, lang, multiwords, dictag);
-		this.annotator = new Annotate(properties);
+			String language = posProperties.getLanguages().get(i);
+			String model = posProperties.getModels().get(i);
+			String lemmatizerModel = posProperties.getLemmatizermodels().get(i);
+
+			LOGGER.info("Create Annotator for language: "+language+" using model:"+model+" and lemmatizerModel: "+lemmatizerModel);
+			Properties properties = setAnnotateProperties(model, lemmatizerModel, language, multiwords, dictag);
+			Annotate annotator = new Annotate(properties);
+			this.annotatorMap.put(language, annotator);
+			this.modelMap.put(language, model);
+		}
 	}
-	
+
 
 }

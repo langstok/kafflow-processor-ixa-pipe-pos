@@ -1,6 +1,6 @@
 package com.langstok.nlp.ixapos.configuration;
 
-import java.util.Map;
+import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -8,16 +8,22 @@ import eus.ixa.ixa.pipe.pos.CLI;
 
 @ConfigurationProperties
 public class IxaPosProperties {
-		
-	/**
-	 * It is required to provide a model to perform POS tagging
-	 */
-	private Map<String, String> models;
 	
 	/**
-	 * It is required to provide a lemmatizer model
+	 * provide language keys as list
 	 */
-	private Map<String, String> lemmatizermodels;
+	private List<String> languages;
+	
+	
+	/**
+	 * It is required to provide a models to perform POS tagging, order by languages
+	 */
+	private List<String> models;
+	
+	/**
+	 * It is required to provide a lemmatizer model, order by languages
+	 */
+	private List<String> lemmatizermodels;
 	
 	/**
 	 * Choose beam size for decoding, it defaults to 3
@@ -33,9 +39,7 @@ public class IxaPosProperties {
 	 * Post process POS tagger output with a monosemic dictionary
 	 */
 	private Boolean dictag = false;
-	
-	private String language = "en";
-	
+		
 	public String getBeamSize() {
 		return beamSize;
 	}
@@ -54,24 +58,23 @@ public class IxaPosProperties {
 	public void setDictag(Boolean dictag) {
 		this.dictag = dictag;
 	}
-	public Map<String, String> getModels() {
+	public List<String> getLanguages() {
+		return languages;
+	}
+	public void setLanguages(List<String> languages) {
+		this.languages = languages;
+	}
+	public List<String> getModels() {
 		return models;
 	}
-	public void setModels(Map<String, String> models) {
+	public void setModels(List<String> models) {
 		this.models = models;
 	}
-	public Map<String, String> getLemmatizermodels() {
+	public List<String> getLemmatizermodels() {
 		return lemmatizermodels;
 	}
-	public void setLemmatizermodels(Map<String, String> lemmatizermodels) {
+	public void setLemmatizermodels(List<String> lemmatizermodels) {
 		this.lemmatizermodels = lemmatizermodels;
 	}
-	public String getLanguage() {
-		return language;
-	}
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-	
 	
 }
