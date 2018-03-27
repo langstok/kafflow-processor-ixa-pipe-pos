@@ -1,5 +1,7 @@
 package com.langstok.nlp.ixapos.configuration;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,18 +14,24 @@ public class IxaPosProperties {
 	/**
 	 * provide language keys as list
 	 */
-	private List<String> languages;
+	private List<String> languages = Arrays.asList(new String[]{"en","nl"});
 	
 	
 	/**
 	 * It is required to provide a models to perform POS tagging, order by languages
 	 */
-	private List<String> models;
-	
+	private List<String> models = Arrays.asList(new String[]{
+			"/maven/morph-models-1.5.0/en/en-pos-maxent-100-c5-baseline-autodict01-conll09.bin",
+			"/maven/morph-models-1.5.0/nl/nl-pos-maxent-100-c5-autodict01-alpino.bin"
+	});
+
 	/**
 	 * It is required to provide a lemmatizer model, order by languages
 	 */
-	private List<String> lemmatizermodels;
+	private List<String> lemmatizermodels = Arrays.asList(new String[]{
+			"/maven/morph-models-1.5.0/en/en-lemma-perceptron-conll09.bin",
+			"/maven/morph-models-1.5.0/nl/nl-lemma-perceptron-alpino.bin"
+	});
 	
 	/**
 	 * Choose beam size for decoding, it defaults to 3

@@ -5,10 +5,5 @@ logging:
   file: processor-ixa-pipe-pos.log
   level: 
     com.langstok: debug
-
-
-languages: 'en'
-models: '..\..\models\morph-models-1.5.0\en\en-pos-maxent-100-c5-baseline-autodict01-conll09.bin'
-lemmatizermodels: '..\..\models\morph-models-1.5.0\en\en-lemma-perceptron-conll09.bin'
  
  
