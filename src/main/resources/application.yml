@@ -1,6 +1,3 @@
-server:
-  port: ${vcap.application.ixaposprocessor.port:0}
-
 logging:
   file: processor-ixa-pipe-pos.log
   level: 
